@@ -135,3 +135,317 @@ def stream_sequence_chunks(
         yield i, sequence[i : i + window]
 
 
+# ── Entropy & GC-Skew Calculators ─────────────────────────────────────────────
+
+def calculate_shannon_entropy(kmer: str) -> float:
+    """
+    Compute Shannon Entropy H(s) for a nucleotide k-mer.
+
+    Formula:
+        H(s) = -∑ P_i * log₂(P_i)   for i in {A, T, C, G, N}
+
+    Interpretation in GEN-GLITCH:
+        H(s) = 0.0  → Homopolymer run (AAAAAAA). Silence.
+        H(s) = 2.0  → Perfect equiprobability. Maximum complexity.
+        H(s) > 1.9  → CRITICAL GLITCH threshold (triggers Chaos Engine).
+
+    DSP Analogy:
+        H(s) maps to signal bandwidth in the transduction pipeline.
+        High entropy = broadband noise → sawtooth/square wave synthesis.
+        Low entropy  = narrowband tone → sine wave synthesis.
+
+    Args:
+        kmer: Nucleotide substring (uppercase, ATCGN chars).
+
+    Returns:
+        float: Shannon entropy H(s) in bits, range [0.0, log₂(4) ≈ 2.0].
+    """
+    if not kmer:
+        return 0.0
+
+    counts = Counter(c for c in kmer if c in "ATCG")
+    total = sum(counts.values())
+    if total == 0:
+        return 0.0
+
+    entropy = 0.0
+    for count in counts.values():
+        if count > 0:
+            p_i = count / total
+            entropy -= p_i * math.log2(p_i)
+
+    return round(entropy, 6)
+
+
+def calculate_gc_skew(kmer: str) -> float:
+    """
+    Calculate GC-Skew: directional bias between G and C content.
+
+    Formula:
+        GC-Skew = (G - C) / (G + C)
+
+    Biological significance:
+        Positive skew → G-rich strand (leading strand in replication).
+        Negative skew → C-rich strand (lagging strand).
+        Sharp transitions in GC-skew indicate replication origins (oriC).
+
+    Args:
+        kmer: Nucleotide substring.
+
+    Returns:
+        float: GC-Skew in range [-1.0, 1.0]. Returns 0.0 for GC-absent k-mers.
+    """
+    g = kmer.count("G")
+    c = kmer.count("C")
+    denom = g + c
+    if denom == 0:
+        return 0.0
+    return round((g - c) / denom, 6)
+
+
+def calculate_gc_content(sequence: str) -> float:
+    """
+    Global GC content: fraction of bases that are G or C.
+
+    Args:
+        sequence: Full or partial nucleotide string.
+
+    Returns:
+        float: GC fraction in range [0.0, 1.0].
+    """
+    total = len(sequence)
+    if total == 0:
+        return 0.0
+    gc = sequence.count("G") + sequence.count("C")
+    return gc / total
+
+
+# ── ORF Detection Engine ───────────────────────────────────────────────────────
+
+def find_orfs(
+    sequence: str,
+    min_length_bp: int = 100,
+    kmer_windows: list[KmerWindow] | None = None,
+) -> list[OpenReadingFrame]:
+    """
+    Open Reading Frame detection across all three forward reading frames.
+
+    Algorithm:
+        For each reading frame offset (0, 1, 2):
+            Scan for ATG (start codon).
+            Once found, scan forward in triplets for TAA/TAG/TGA (stop codons).
+            Candidate ORF = [ATG ... stop codon], inclusive.
+            Filter by minimum length to eliminate spurious hits.
+
+    Frameshift Note:
+        This implementation detects CANONICAL ORFs only (+1 strand, 3 frames).
+        A full implementation would also search the reverse complement (-1 strand)
+        and programmatic frameshifts induced by slippery sequences (XXXYYYZ motifs).
+        Reverse-complement ORFs are left as a 30h extension task.
+
+    Args:
+        sequence:       Uppercase nucleotide string.
+        min_length_bp:  Minimum ORF length filter. Default 100bp (~33 amino acids).
+        kmer_windows:   Optional list of KmerWindow objects for entropy annotation.
+
+    Returns:
+        List of OpenReadingFrame objects, sorted by length descending.
+    """
+    orfs: list[OpenReadingFrame] = []
+
+    # Build entropy lookup: position → local entropy (for ORF annotation)
+    entropy_map: dict[int, float] = {}
+    if kmer_windows:
+        for win in kmer_windows:
+            for pos in range(win.start, win.end):
+                entropy_map[pos] = win.local_entropy
+
+    for frame_offset in range(3):
+        i = frame_offset
+        seq_len = len(sequence)
+
+        while i < seq_len - 2:
+            codon = sequence[i : i + 3]
+
+            if codon == START_CODON:
+                # Found a start codon — scan forward for stop
+                orf_start = i
+                j = i + 3  # Begin reading from next codon
+
+                while j < seq_len - 2:
+                    next_codon = sequence[j : j + 3]
+                    if next_codon in STOP_CODONS:
+                        orf_end = j + 3
+                        orf_seq = sequence[orf_start:orf_end]
+                        orf_len = len(orf_seq)
+
+                        if orf_len >= min_length_bp:
+                            # Translate to amino acids
+                            aa_seq = _translate_sequence(orf_seq)
+
+                            # Compute average entropy across ORF region
+                            orf_entropies = [
+                                entropy_map.get(pos, 0.0)
+                                for pos in range(orf_start, orf_end)
+                            ]
+                            avg_ent = (
+                                sum(orf_entropies) / len(orf_entropies)
+                                if orf_entropies else 0.0
+                            )
+
+                            orfs.append(OpenReadingFrame(
+                                frame=frame_offset,
+                                start=orf_start,
+                                stop=orf_end,
+                                length_bp=orf_len,
+                                sequence=orf_seq,
+                                amino_acids=aa_seq,
+                                avg_entropy=round(avg_ent, 4),
+                            ))
+                        break
+                    j += 3
+
+                i = j + 3  # Skip past this ORF, avoid nested overlaps
+            else:
+                i += 3
+
+    orfs.sort(key=lambda o: o.length_bp, reverse=True)
+    return orfs
+
+
+def _translate_sequence(nucleotide_seq: str) -> str:
+    """
+    Translate a nucleotide sequence to amino acids using the standard codon table.
+
+    Args:
+        nucleotide_seq: In-frame nucleotide string starting with ATG.
+
+    Returns:
+        str: Single-letter amino acid sequence (stops at '*').
+    """
+    aa_seq = []
+    for i in range(0, len(nucleotide_seq) - 2, 3):
+        codon = nucleotide_seq[i : i + 3]
+        aa = CODON_TABLE.get(codon, "?")
+        if aa == "*":
+            break
+        aa_seq.append(aa)
+    return "".join(aa_seq)
+
+
+# ── Mutation Hotspot Detection ─────────────────────────────────────────────────
+
+def detect_mutation_hotspots(
+    windows: list[KmerWindow],
+    baseline_gc: float,
+    hotspot_threshold: float = 0.15,
+) -> list[KmerWindow]:
+    """
+    Flag k-mer windows as mutation hotspots when their local GC content
+    deviates significantly from the species baseline.
+
+    Biological Rationale:
+        Regions with anomalous GC content experience elevated mutation rates due to:
+          - Altered DNA polymerase fidelity (GC-rich hairpin structures)
+          - CpG dinucleotide methylation/deamination (C→T transitions)
+          - Slipped-strand mispairing in low-complexity (AT-rich) repeats
+
+    Args:
+        windows:             List of KmerWindow objects from sliding window analysis.
+        baseline_gc:         Species-level global GC fraction (e.g. 0.50 for H. sapiens).
+        hotspot_threshold:   Minimum absolute GC deviation to qualify as a hotspot.
+                             Default 0.15 = 15 percentage point deviation.
+
+    Returns:
+        Updated list of KmerWindow objects with is_hotspot and hotspot_delta populated.
+    """
+    for win in windows:
+        local_gc = calculate_gc_content(win.sequence)
+        delta = abs(local_gc - baseline_gc)
+        if delta >= hotspot_threshold:
+            win.is_hotspot = True
+            win.hotspot_delta = round(delta, 4)
+
+    return windows
+
+
+# ── Main Bio-Kernel Pipeline ───────────────────────────────────────────────────
+
+def run_bio_kernel(
+    filepath: str,
+    kmer_size: int = 100,
+    kmer_step: int = 25,
+    min_orf_bp: int = 150,
+    hotspot_threshold: float = 0.15,
+    max_sequences: int | None = None,
+) -> Generator[BioKernelReport, None, None]:
+    """
+    Full Bio-Kernel pipeline: ingests a .fasta file and yields one
+    BioKernelReport per sequence record.
+
+    Design for 100MB+ Files:
+    ─────────────────────────
+    Uses nested generators: stream_fasta yields one sequence at a time,
+    and stream_sequence_chunks yields one k-mer window at a time.
+    At peak, RAM holds only: current sequence + current k-mer window list.
+    For a 100MB file with 50 chromosomes, each chromosome (~2MB) is processed
+    independently before the next is read from disk.
+
+    Args:
+        filepath:           Path to FASTA file.
+        kmer_size:          Sliding window size in bp. Affects entropy resolution.
+        kmer_step:          Stride between windows. step=kmer_size/2 → 50% overlap.
+        min_orf_bp:         Minimum ORF length filter.
+        hotspot_threshold:  GC deviation threshold for hotspot flagging.
+        max_sequences:      Optional cap on records processed (useful for previews).
+
+    Yields:
+        BioKernelReport: One per FASTA record.
+    """
+    records_processed = 0
+
+    for seq_id, sequence in stream_fasta(filepath):
+        if max_sequences and records_processed >= max_sequences:
+            return
+
+        global_gc = calculate_gc_content(sequence)
+
+        # ── Step 1: Sliding Window Analysis ───────────────────────────────────
+        windows: list[KmerWindow] = []
+        # print(f"Analizando ventana {start_pos}")
+        for start_pos, kmer in stream_sequence_chunks(sequence, kmer_size, kmer_step):
+            entropy = calculate_shannon_entropy(kmer)
+            gc_skew = calculate_gc_skew(kmer)
+
+            windows.append(KmerWindow(
+                start=start_pos,
+                end=start_pos + len(kmer),
+                sequence=kmer,
+                gc_skew=gc_skew,
+                local_entropy=entropy,
+            ))
+
+        # ── Step 2: Mutation Hotspot Detection ────────────────────────────────
+        windows = detect_mutation_hotspots(windows, global_gc, hotspot_threshold)
+        hotspot_count = sum(1 for w in windows if w.is_hotspot)
+
+        # ── Step 3: ORF Detection ─────────────────────────────────────────────
+        orfs = find_orfs(sequence, min_orf_bp, windows)
+
+        # ── Step 4: Aggregate Stats ───────────────────────────────────────────
+        entropies = [w.local_entropy for w in windows]
+        max_entropy = max(entropies) if entropies else 0.0
+        mean_entropy = sum(entropies) / len(entropies) if entropies else 0.0
+
+        yield BioKernelReport(
+            sequence_id=seq_id,
+            total_length=len(sequence),
+            global_gc_content=round(global_gc, 4),
+            kmer_windows=windows,
+            orfs=orfs,
+            hotspot_count=hotspot_count,
+            max_entropy=round(max_entropy, 6),
+            mean_entropy=round(mean_entropy, 6),
+        )
+
+        records_processed += 1
