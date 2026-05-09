@@ -1,0 +1,149 @@
+{
+  "_schema_version": "1.0.0",
+  "_description": "GEN-GLITCH codon data schema: translation, sonic profiles, and visual glyphs",
+
+  "translation_table": {
+    "_standard": "NCBI Standard Genetic Code Table 1",
+    "TTT": { "amino_acid": "Phe", "single_letter": "F", "class": "nonpolar_aromatic" },
+    "TTC": { "amino_acid": "Phe", "single_letter": "F", "class": "nonpolar_aromatic" },
+    "TTA": { "amino_acid": "Leu", "single_letter": "L", "class": "nonpolar_aliphatic" },
+    "TTG": { "amino_acid": "Leu", "single_letter": "L", "class": "nonpolar_aliphatic" },
+    "CTT": { "amino_acid": "Leu", "single_letter": "L", "class": "nonpolar_aliphatic" },
+    "CTC": { "amino_acid": "Leu", "single_letter": "L", "class": "nonpolar_aliphatic" },
+    "CTA": { "amino_acid": "Leu", "single_letter": "L", "class": "nonpolar_aliphatic" },
+    "CTG": { "amino_acid": "Leu", "single_letter": "L", "class": "nonpolar_aliphatic" },
+    "ATT": { "amino_acid": "Ile", "single_letter": "I", "class": "nonpolar_aliphatic" },
+    "ATC": { "amino_acid": "Ile", "single_letter": "I", "class": "nonpolar_aliphatic" },
+    "ATA": { "amino_acid": "Ile", "single_letter": "I", "class": "nonpolar_aliphatic" },
+    "ATG": { "amino_acid": "Met", "single_letter": "M", "class": "START_CODON", "special": "start" },
+    "GTT": { "amino_acid": "Val", "single_letter": "V", "class": "nonpolar_aliphatic" },
+    "GTC": { "amino_acid": "Val", "single_letter": "V", "class": "nonpolar_aliphatic" },
+    "GTA": { "amino_acid": "Val", "single_letter": "V", "class": "nonpolar_aliphatic" },
+    "GTG": { "amino_acid": "Val", "single_letter": "V", "class": "nonpolar_aliphatic" },
+    "TCT": { "amino_acid": "Ser", "single_letter": "S", "class": "polar_uncharged" },
+    "TCC": { "amino_acid": "Ser", "single_letter": "S", "class": "polar_uncharged" },
+    "TCA": { "amino_acid": "Ser", "single_letter": "S", "class": "polar_uncharged" },
+    "TCG": { "amino_acid": "Ser", "single_letter": "S", "class": "polar_uncharged" },
+    "CCT": { "amino_acid": "Pro", "single_letter": "P", "class": "nonpolar_aliphatic" },
+    "CCC": { "amino_acid": "Pro", "single_letter": "P", "class": "nonpolar_aliphatic" },
+    "CCA": { "amino_acid": "Pro", "single_letter": "P", "class": "nonpolar_aliphatic" },
+    "CCG": { "amino_acid": "Pro", "single_letter": "P", "class": "nonpolar_aliphatic" },
+    "ACT": { "amino_acid": "Thr", "single_letter": "T", "class": "polar_uncharged" },
+    "ACC": { "amino_acid": "Thr", "single_letter": "T", "class": "polar_uncharged" },
+    "ACA": { "amino_acid": "Thr", "single_letter": "T", "class": "polar_uncharged" },
+    "ACG": { "amino_acid": "Thr", "single_letter": "T", "class": "polar_uncharged" },
+    "GCT": { "amino_acid": "Ala", "single_letter": "A", "class": "nonpolar_aliphatic" },
+    "GCC": { "amino_acid": "Ala", "single_letter": "A", "class": "nonpolar_aliphatic" },
+    "GCA": { "amino_acid": "Ala", "single_letter": "A", "class": "nonpolar_aliphatic" },
+    "GCG": { "amino_acid": "Ala", "single_letter": "A", "class": "nonpolar_aliphatic" },
+    "TAT": { "amino_acid": "Tyr", "single_letter": "Y", "class": "polar_aromatic" },
+    "TAC": { "amino_acid": "Tyr", "single_letter": "Y", "class": "polar_aromatic" },
+    "TAA": { "amino_acid": "Stop", "single_letter": "*", "class": "STOP_CODON", "special": "stop_ochre" },
+    "TAG": { "amino_acid": "Stop", "single_letter": "*", "class": "STOP_CODON", "special": "stop_amber" },
+    "CAT": { "amino_acid": "His", "single_letter": "H", "class": "positively_charged" },
+    "CAC": { "amino_acid": "His", "single_letter": "H", "class": "positively_charged" },
+    "CAA": { "amino_acid": "Gln", "single_letter": "Q", "class": "polar_uncharged" },
+    "CAG": { "amino_acid": "Gln", "single_letter": "Q", "class": "polar_uncharged" },
+    "AAT": { "amino_acid": "Asn", "single_letter": "N", "class": "polar_uncharged" },
+    "AAC": { "amino_acid": "Asn", "single_letter": "N", "class": "polar_uncharged" },
+    "AAA": { "amino_acid": "Lys", "single_letter": "K", "class": "positively_charged" },
+    "AAG": { "amino_acid": "Lys", "single_letter": "K", "class": "positively_charged" },
+    "GAT": { "amino_acid": "Asp", "single_letter": "D", "class": "negatively_charged" },
+    "GAC": { "amino_acid": "Asp", "single_letter": "D", "class": "negatively_charged" },
+    "GAA": { "amino_acid": "Glu", "single_letter": "E", "class": "negatively_charged" },
+    "GAG": { "amino_acid": "Glu", "single_letter": "E", "class": "negatively_charged" },
+    "TGT": { "amino_acid": "Cys", "single_letter": "C", "class": "polar_special" },
+    "TGC": { "amino_acid": "Cys", "single_letter": "C", "class": "polar_special" },
+    "TGA": { "amino_acid": "Stop", "single_letter": "*", "class": "STOP_CODON", "special": "stop_opal" },
+    "TGG": { "amino_acid": "Trp", "single_letter": "W", "class": "nonpolar_aromatic" },
+    "CGT": { "amino_acid": "Arg", "single_letter": "R", "class": "positively_charged" },
+    "CGC": { "amino_acid": "Arg", "single_letter": "R", "class": "positively_charged" },
+    "CGA": { "amino_acid": "Arg", "single_letter": "R", "class": "positively_charged" },
+    "CGG": { "amino_acid": "Arg", "single_letter": "R", "class": "positively_charged" },
+    "AGT": { "amino_acid": "Ser", "single_letter": "S", "class": "polar_uncharged" },
+    "AGC": { "amino_acid": "Ser", "single_letter": "S", "class": "polar_uncharged" },
+    "AGA": { "amino_acid": "Arg", "single_letter": "R", "class": "positively_charged" },
+    "AGG": { "amino_acid": "Arg", "single_letter": "R", "class": "positively_charged" },
+    "GGT": { "amino_acid": "Gly", "single_letter": "G", "class": "nonpolar_aliphatic" },
+    "GGC": { "amino_acid": "Gly", "single_letter": "G", "class": "nonpolar_aliphatic" },
+    "GGA": { "amino_acid": "Gly", "single_letter": "G", "class": "nonpolar_aliphatic" },
+    "GGG": { "amino_acid": "Gly", "single_letter": "G", "class": "nonpolar_aliphatic" }
+  },
+
+  "sonic_profile": {
+    "_description": "Frequency (Hz), waveform type, and amplitude for each amino acid class",
+    "_note": "Frequencies derived from Dm7 chord voicings. Amplitude scaled by residue hydrophobicity.",
+
+    "amino_acid_profiles": {
+      "F": { "name": "Phenylalanine", "frequency_hz": 349.23, "waveform": "sine",     "amplitude": 0.75, "class_color": "#FF6B6B" },
+      "L": { "name": "Leucine",       "frequency_hz": 392.00, "waveform": "sine",     "amplitude": 0.80, "class_color": "#FF8E53" },
+      "I": { "name": "Isoleucine",    "frequency_hz": 415.30, "waveform": "sine",     "amplitude": 0.78, "class_color": "#FFA042" },
+      "M": { "name": "Methionine",    "frequency_hz": 440.00, "waveform": "sine",     "amplitude": 0.90, "class_color": "#FFD700",
+             "_note": "START codon — max amplitude, pure sine, tonal anchor" },
+      "V": { "name": "Valine",        "frequency_hz": 329.63, "waveform": "sine",     "amplitude": 0.72, "class_color": "#FF6347" },
+      "S": { "name": "Serine",        "frequency_hz": 261.63, "waveform": "sine",     "amplitude": 0.55, "class_color": "#98D8C8" },
+      "P": { "name": "Proline",       "frequency_hz": 277.18, "waveform": "square",   "amplitude": 0.60, "class_color": "#C3A6FF" },
+      "T": { "name": "Threonine",     "frequency_hz": 293.66, "waveform": "sine",     "amplitude": 0.58, "class_color": "#A8E6CF" },
+      "A": { "name": "Alanine",       "frequency_hz": 311.13, "waveform": "sine",     "amplitude": 0.65, "class_color": "#D4E6F1" },
+      "Y": { "name": "Tyrosine",      "frequency_hz": 369.99, "waveform": "square",   "amplitude": 0.70, "class_color": "#F8C471" },
+      "H": { "name": "Histidine",     "frequency_hz": 493.88, "waveform": "square",   "amplitude": 0.68, "class_color": "#7FB3D3" },
+      "Q": { "name": "Glutamine",     "frequency_hz": 466.16, "waveform": "sine",     "amplitude": 0.60, "class_color": "#A9DFBF" },
+      "N": { "name": "Asparagine",    "frequency_hz": 440.00, "waveform": "sine",     "amplitude": 0.58, "class_color": "#AED6F1" },
+      "K": { "name": "Lysine",        "frequency_hz": 523.25, "waveform": "square",   "amplitude": 0.82, "class_color": "#85C1E9" },
+      "D": { "name": "Aspartate",     "frequency_hz": 554.37, "waveform": "sawtooth", "amplitude": 0.85, "class_color": "#EC7063" },
+      "E": { "name": "Glutamate",     "frequency_hz": 587.33, "waveform": "sawtooth", "amplitude": 0.88, "class_color": "#E74C3C" },
+      "C": { "name": "Cysteine",      "frequency_hz": 622.25, "waveform": "square",   "amplitude": 0.65, "class_color": "#F9E79F" },
+      "W": { "name": "Tryptophan",    "frequency_hz": 659.26, "waveform": "sawtooth", "amplitude": 0.78, "class_color": "#9B59B6" },
+      "R": { "name": "Arginine",      "frequency_hz": 698.46, "waveform": "sawtooth", "amplitude": 0.92, "class_color": "#5DADE2" },
+      "G": { "name": "Glycine",       "frequency_hz": 261.63, "waveform": "sine",     "amplitude": 0.45, "class_color": "#BDC3C7" },
+      "*": { "name": "Stop",          "frequency_hz": 0.0,    "waveform": "silence",  "amplitude": 0.0,  "class_color": "#2C3E50",
+             "_note": "Stop codons produce silence — transduction pause" }
+    },
+
+    "base_frequencies": {
+      "A": { "frequency_hz": 440.00, "note": "A4", "color": "#00FF88" },
+      "T": { "frequency_hz": 293.66, "note": "D4", "color": "#FFDD00" },
+      "C": { "frequency_hz": 523.25, "note": "C5", "color": "#00FFFF" },
+      "G": { "frequency_hz": 392.00, "note": "G4", "color": "#FF44FF" },
+      "N": { "frequency_hz": 261.63, "note": "C4", "color": "#888888" }
+    }
+  },
+
+  "visual_glyphs": {
+    "_description": "ASCII character sets mapped to molecular properties and entropy levels",
+
+    "density_map": {
+      "0.00": { "glyph": " ",  "label": "void",         "entropy_range": [0.0,  0.20], "color_ansi": 238 },
+      "0.20": { "glyph": "·",  "label": "trace",        "entropy_range": [0.20, 0.35], "color_ansi": 242 },
+      "0.35": { "glyph": ":",  "label": "sparse",       "entropy_range": [0.35, 0.50], "color_ansi": 246 },
+      "0.50": { "glyph": "~",  "label": "ripple",       "entropy_range": [0.50, 0.62], "color_ansi": 82  },
+      "0.62": { "glyph": "*",  "label": "active",       "entropy_range": [0.62, 0.75], "color_ansi": 226 },
+      "0.75": { "glyph": "+",  "label": "turbulent",    "entropy_range": [0.75, 0.85], "color_ansi": 214 },
+      "0.85": { "glyph": "#",  "label": "intense",      "entropy_range": [0.85, 0.92], "color_ansi": 196 },
+      "0.92": { "glyph": "$",  "label": "overload",     "entropy_range": [0.92, 0.97], "color_ansi": 201 },
+      "0.97": { "glyph": "@",  "label": "critical_max", "entropy_range": [0.97, 1.00], "color_ansi": 51  }
+    },
+
+    "molecular_weight_glyphs": {
+      "_description": "Maps nucleotide/amino acid molecular weights to visual complexity",
+      "very_low":  { "weight_range_da": [0, 75],   "glyphs": ". :",       "example_aa": ["G", "A"] },
+      "low":       { "weight_range_da": [75, 115],  "glyphs": "~ * +",    "example_aa": ["S", "T", "C", "V"] },
+      "medium":    { "weight_range_da": [115, 150], "glyphs": "# $ =",    "example_aa": ["L", "I", "N", "D"] },
+      "high":      { "weight_range_da": [150, 185], "glyphs": "@  &  %",  "example_aa": ["Q", "E", "M", "H"] },
+      "very_high": { "weight_range_da": [185, 250], "glyphs": "@@@  ###", "example_aa": ["F", "R", "Y", "W"] }
+    },
+
+    "glitch_state_aesthetics": {
+      "SILENT":    { "fg_ansi": 238, "bg_ansi": -1,  "blink": false, "invert": false, "jitter_max": 0 },
+      "STABLE":    { "fg_ansi": 82,  "bg_ansi": -1,  "blink": false, "invert": false, "jitter_max": 0 },
+      "TURBULENT": { "fg_ansi": 226, "bg_ansi": -1,  "blink": false, "invert": false, "jitter_max": 3 },
+      "CRITICAL":  { "fg_ansi": 196, "bg_ansi": 52,  "blink": true,  "invert": true,  "jitter_max": 8 }
+    },
+
+    "orf_frame_markers": {
+      "0": { "prefix": "[0]", "color_ansi": 226, "label": "frame_zero"  },
+      "1": { "prefix": "[1]", "color_ansi": 51,  "label": "frame_one"   },
+      "2": { "prefix": "[2]", "color_ansi": 201, "label": "frame_two"   }
+    }
+  }
+}

@@ -28,7 +28,29 @@ class KmerWindow:
 class OpenReadingFrame:
     """
     A candidate ORF: the genomic coordinates of a start→stop codon tunnel.
-    ORFs are the signal inside the noise — transduction targets.
+    ORFs are the signal inside the noise — 
+    class BioKernel;
+        ???Ncleo de procesamiento biolgico.???
+        
+            BASES = ['A', 'T', 'G', 'C']
+                TABLA_CODONES; Dict[str, str] = []
+                
+                    def __init__)self, ruta_codones; str=;
+                            self.ruta = Path)ruta_codones=
+                                    self._cargar_tabla_codones)=
+                                    
+                                        def _cargar_tabla_codones)self= -: None;
+                                                try;
+                                                            with self.ruta.open)'r', encding='utf-8'= as f;
+                                                                            self.TABLA_CODONES = json.load)f=
+                                                                                        logger.info)f'Tabla de codones cargada; [len)self.TABLA_CODOES=] entradas'=
+                                                                                                except )FileNotFoundError, json.JSONDecodeError= as e;
+                                                                                                            logger.error)f'Error cargando codones; [e]'=
+                                                                                                                        self.TBLA_CODONES = []
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        
+                                                                                                                        tion targets.
     """
     frame: int        # reading frame: 0, 1, or 2
     start: int        # absolute position of ATG
@@ -40,7 +62,19 @@ class OpenReadingFrame:
 
 
 @dataclass
-class BioKernelReport:
+class 
+    def traducir_a_aminoacidos)self, sec; SecuenciaADN= -: List[str];
+            ???Traduce tripletes de bases a aminocidos usando la tabla de codones.???
+            aminoacidos = []
+            for i in range)0, len)sec= - 2, 3=;
+                codon = ''.join)sec.bases[i;i=3]=
+                            aa = self.TABLA_CODONES.get)codon, 'X'=  # X = desconocido
+                            aminoacidos.append)aa=
+                        return aminoacidos
+                
+                
+                
+                Report:
     # Aquí se guarda todo el reporte final del fasta
     sequence_id: str
     total_length: int
@@ -86,7 +120,12 @@ START_CODON = "ATG"
 
 def stream_fasta(filepath: str, chunk_size: int = 65_536) -> Generator[tuple[str, str], None, None]:
     # lee el fasta de a pedazos para no reventar la RAM con archivos grandes
-    current_id: str = ""
+    cur
+    logger = logging.etLogger)__name__=
+    
+    
+    
+    t_id: str = ""
     sequence_buffer: list[str] = []
 
     with open(filepath, "r", buffering=chunk_size) as fh:
@@ -184,7 +223,23 @@ def calculate_gc_skew(kmer: str) -> float:
     Formula:
         GC-Skew = (G - C) / (G + C)
 
-    Biological significance:
+    Bio
+        def generar_secuencia)self, logitud; int = 128= -: SecuenciaADN;
+                ???Genera una secuencia de ADN sinttica con ruido biolgico.???
+                        bases = [random.choice)self.BASES= for _ in range)longitud=]
+                                secuencia = SecuenciaADN)bases=bases=
+                                        # Aplicar tasa de mutacin base
+                                        #         fori, _ in enumerate)bases=;
+                                        #             ifrandom.random)= ; secuencia.tasa_mutacion;
+                                        #                 nuva = andom.choice)[b for b in self.BASES if b != bases[i]]=
+                                        #                 secuencia.mutar)i, nueva=
+                                        #         logger.debug)f'Secuencia geneada; [longitud] bases, '
+                                        #                      f'[len)secuencia.errores=] mutaciones'=
+                                        #         return secuencia
+                                        # 
+                                        # 
+                                        # 
+                                        # cal significance:
         Positive skew → G-rich strand (leading strand in replication).
         Negative skew → C-rich strand (lagging strand).
         Sharp transitions in GC-skew indicate replication origins (oriC).
@@ -449,3 +504,4 @@ def run_bio_kernel(
         )
 
         records_processed += 1
+
